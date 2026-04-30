@@ -15,10 +15,12 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ["Figtree", ...defaultTheme.fontFamily.sans],
+                sans: ['"DM Sans"', ...defaultTheme.fontFamily.sans],
             },
             colors: {
                 primary: "#4880FF",
+                secondary: "#E7EEFF",
+                neutral: "#686868",
             },
         },
     },
