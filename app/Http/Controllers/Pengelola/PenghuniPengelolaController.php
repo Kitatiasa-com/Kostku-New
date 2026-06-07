@@ -131,18 +131,28 @@ class PenghuniPengelolaController extends Controller
                 ]);
             }
 
+            $kamarId = $penghuni->nomor_kamar;
+
+            if (empty($kamarId)) {
+                // kamar_id nullable, tapi guard ini mencegah FK error jika kolom tidak terisi.
+                $kamarId = null;
+            }
+
             \App\Models\Record::create([
-                'user_id'                    => $penghuni->user_id,
-                'kamar_id'                   => $penghuni->nomor_kamar,
-                'tanggal_masuk'              => $penghuni->tanggal_masuk,
-                'tanggal_keluar'             => now(),
-                'is_redflag'                 => $isRedflag,
-                'skor_pembayaran'            => $request->input('skor_pembayaran'),
-                'skor_sikap'                 => $request->input('skor_sikap'),
-                'skor_perawatan_fasilitas'   => $request->input('skor_perawatan_fasilitas'),
-                'catatan'                    => $request->input('catatan'),
-                'bukti'                      => $buktiFilePath,
-                'status'                     => 'Menunggu', // <-- tambahan ini
+                'user_id' => $penghuni->user_id,
+                'kamar_id' => $kamarId,
+
+                'tanggal_masuk' => optional($penghuni->tanggal_masuk)->toDateString(),
+                'tanggal_keluar' => now()->toDateString(),
+
+                'is_redflag' => $isRedflag,
+
+                'skor_pembayaran' => $request->input('skor_pembayaran'),
+                'skor_sikap' => $request->input('skor_sikap'),
+                'skor_perawatan_fasilitas' => $request->input('skor_perawatan_fasilitas'),
+
+                'catatan' => $request->input('catatan'),
+                'bukti' => $buktiFilePath,
             ]);
 
             $penghuni->delete();

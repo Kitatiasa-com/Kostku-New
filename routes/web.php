@@ -95,6 +95,18 @@ Route::controller(DashboardPenghuniController::class)->group(function () {
 // Pembayaran Penghuni
 Route::controller(PembayaranPenghuniController::class)->group(function () {
     Route::get('/penghuni/pembayaran-penghuni', 'viewPembayaran')->name('pembayaran.penghuni');
+    Route::post('/payment/create', [PembayaranPenghuniController::class, 'create']);
+    Route::get('/payment/status/{pembayaran}', [PembayaranPenghuniController::class, 'status']);
+    Route::get('/payment/history', [PembayaranPenghuniController::class, 'getHistory'])->name('payment.history');
+    Route::get('/payment/pending/{pembayaran}', [PembayaranPenghuniController::class, 'pending'])->name('payment.pending');
+    Route::post('/payment/simulate/{pembayaran}/settlement', [PembayaranPenghuniController::class, 'simulateSettlement']);
+    Route::post('/payment/callback', [PembayaranPenghuniController::class, 'callback'])
+        ->withoutMiddleware([
+            Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
+        ]);
+    Route::get('/payment/finish', [PembayaranPenghuniController::class, 'finish']);
+    Route::get('/payment/unfinish', [PembayaranPenghuniController::class, 'unfinish']);
+    Route::get('/payment/error', [PembayaranPenghuniController::class, 'error']);
 });
 
 // Pengaduan Penghuni

@@ -32,6 +32,7 @@ class Penghuni extends Model
     }
 
     protected $casts = [
+        'tanggal_masuk' => 'date',
         'tanggal_keluar' => 'datetime',
     ];
 
@@ -41,5 +42,10 @@ class Penghuni extends Model
 
     public function kamar() {
         return $this->belongsTo(Kamar::class, 'nomor_kamar');
+    }
+
+    public function pembayarans()
+    {
+        return $this->hasMany(Pembayaran::class);
     }
 }
