@@ -223,6 +223,7 @@ class PembayaranPenghuniController extends Controller
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $email = 'user' . $user->id . '@placeholder.com';
         }
+        
 
         $snapToken = Snap::getSnapToken([
             'transaction_details' => [
