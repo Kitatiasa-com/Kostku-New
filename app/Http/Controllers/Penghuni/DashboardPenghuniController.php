@@ -23,7 +23,9 @@ class DashboardPenghuniController extends Controller
             'kode_kost' => 'required|string',
         ]);
 
-        $kost = Kost::where('kode_kost', $request->kode_kost)->first();
+        $kodeKost = trim($request->kode_kost);
+
+        $kost = Kost::where('kode_kost', $kodeKost)->first();
 
         if (!$kost) {
             return redirect()->back()->with('error', 'Kode kost tidak valid.');
