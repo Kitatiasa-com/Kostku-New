@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('isi')->nullable();
             $table->string('balasan')->nullable();
             $table->enum('status', ['baru', 'proses', 'selesai'])->default('baru');
+            $table->string('bukti_pengaduan')->nullable();
             $table->timestamps();
         });
     }

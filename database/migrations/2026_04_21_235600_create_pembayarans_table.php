@@ -19,8 +19,14 @@ return new class extends Migration
             $table->integer('nominal');
             $table->enum('tipe_pembayaran', ['lunas', 'cicilan'])->default('lunas');
             $table->integer('jumlah_cicilan')->default(1);
-            $table->enum('status', ['belum_bayar', 'lunas'])->default('belum_bayar');
+            $table->enum('status', ['belum_bayar', 'pending', 'lunas', 'failed'])->default('belum_bayar');
+            $table->string('transaction_status')->nullable();
             $table->string('snap_token')->nullable(); // Token dari Midtrans
+            $table->string('transaction_id')->nullable();
+            $table->string('va_number')->nullable();
+            $table->string('payment_type')->nullable();
+            $table->timestamp('paid_at')->nullable();
+            $table->json('midtrans_response')->nullable();
             $table->timestamps();
         });
     }
