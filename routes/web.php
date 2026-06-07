@@ -242,6 +242,7 @@ Route::middleware('auth')->group(function () {
             $request->auth_token,
             $request->content_encoding
         );
+        
         return response()->json(['success' => true]);
     })->name('push.subscribe');
 

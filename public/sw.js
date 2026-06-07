@@ -7,6 +7,7 @@ self.addEventListener('push', function(e) {
     });
 });
 
+
 self.addEventListener('notificationclick', function(e) {
     e.notification.close();
     e.waitUntil(clients.openWindow(e.notification.data.url));

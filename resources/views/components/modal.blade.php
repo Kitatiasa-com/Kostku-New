@@ -28,6 +28,7 @@ default => $maxWidth,
         <div class="mb-4">
             {{ $header }}
         </div>
+        
         @endisset
 
         {{-- BODY --}}
