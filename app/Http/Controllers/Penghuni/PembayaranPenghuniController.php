@@ -224,7 +224,6 @@ class PembayaranPenghuniController extends Controller
             $email = 'user' . $user->id . '@placeholder.com';
         }
         
-
         $snapToken = Snap::getSnapToken([
             'transaction_details' => [
                 'order_id'     => $midtransOrderId,
@@ -234,6 +233,7 @@ class PembayaranPenghuniController extends Controller
                 'first_name' => trim($user->nama),
                 'email'      => $email,
             ],
+            
         ]);
 
         $pembayaran->update([
