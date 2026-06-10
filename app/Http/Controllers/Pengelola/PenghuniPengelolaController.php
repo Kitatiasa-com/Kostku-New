@@ -12,6 +12,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Pembayaran;
 use App\Notifications\RequestDisetujuiNotification;
+use App\Notifications\RequestDitolakNotification;
+use App\Notifications\RequestKeluarDitolakNotification;
 
 class PenghuniPengelolaController extends Controller
 {
@@ -151,30 +153,48 @@ class PenghuniPengelolaController extends Controller
         return redirect()->back()->with('success', 'Permintaan masuk berhasil disetujui.');
     }
 
-    public function rejectPermintaanKeluar($id)
+    public function rejectPermintaanMasuk(Request $request, $id)
     {
         $penghuni = Penghuni::findOrFail($id);
 
-        // Ketika permintaan keluar ditolak, penghuni harus kembali menjadi penghuni aktif.
-        // Query daftar penghuni memakai: status_request = 'disetujui' dan tanggal_keluar IS NULL.
+        if ($request->filled('alasan_tolak')) {
+            $request->validate([
+                'alasan_tolak' => 'required|string|max:1000',
+            ]);
+        }
+
         $penghuni->update([
-            'status_request' => 'disetujui',
-            'tanggal_keluar' => null,
+            'status_request' => 'ditolak',
+            'alasan_tolak'   => $request->alasan_tolak,
         ]);
+
+        $penghuni->refresh(); // ← tambah ini
+        $penghuni->user->notify(new RequestDitolakNotification($penghuni));
+
+        return back()->with('success', 'Permintaan penghuni berhasil ditolak.');
+    }
+
+    public function rejectPermintaanKeluar(Request $request, $id)
+    {
+        $penghuni = Penghuni::findOrFail($id);
+
+        if ($request->filled('alasan_tolak_keluar')) {
+            $request->validate([
+                'alasan_tolak_keluar' => 'required|string|max:1000',
+            ]);
+        }
+
+        $penghuni->update([
+            'status_request'      => 'disetujui',
+            'tanggal_keluar'      => null,
+            'alasan_tolak_keluar' => $request->alasan_tolak_keluar,
+        ]);
+
+        $penghuni->refresh(); // ← tambah ini
+        $penghuni->user->notify(new RequestKeluarDitolakNotification($penghuni));
 
         return redirect()->back()->with('success', 'Permintaan keluar berhasil ditolak.');
     }
-
-    public function rejectPermintaanMasuk($id)
-    {
-        Penghuni::findOrFail($id)->delete();
-
-        return back()->with(
-            'success',
-            'Permintaan masuk berhasil ditolak.'
-        );
-    }
-
 
     public function approveKeluar(Request $request, $id)
     {

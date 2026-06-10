@@ -628,22 +628,10 @@
 
         {{-- ================= CONFIRM TOLAK ================= --}}
         <template x-if="modalType === 'confirm-tolak'">
-
             <div class="relative">
+                <button type="button" class="absolute top-0 right-0 text-xl" @click="closeModal()">✕</button>
 
-                <button
-                    type="button"
-                    class="absolute top-0 right-0 text-xl"
-                    @click="closeModal()">
-
-                    ✕
-
-                </button>
-
-                <h2 class="text-xl font-bold mb-4">
-                    Konfirmasi Tolak
-                </h2>
-
+                <h2 class="text-xl font-bold mb-4">Konfirmasi Tolak</h2>
                 <p class="text-xs text-neutral">Apakah Anda yakin ingin menolak permintaan penghuni? Tindakan ini tidak dapat dibatalkan.</p>
 
                 <div class="flex gap-3 mt-8">
@@ -654,25 +642,58 @@
                         Batal
                     </x-form.button>
                     <x-form.button
-                        type="submit"
+                        type="button"
                         class="w-full !text-white !bg-red-600 hover:!bg-red-100 hover:!text-red-600"
-                        @click="$refs.formRejectMasuk.submit()">
+                        @click="modalType = 'alasan-tolak'">  {{-- ← Pindah ke modal alasan, BUKAN submit --}}
                         Tolak
                     </x-form.button>
-                    <form
-                        x-ref="formRejectMasuk"
-                        :action="'/pengelola/penghuni-pengelola/reject-masuk/' + selectedPenghuni.id"
-                        method="POST"
-                        class="hidden">
-                        @csrf
-                    </form>
-
                 </div>
-
             </div>
-
         </template>
 
+        {{-- ================= ALASAN TOLAK ================= --}}
+        <template x-if="modalType === 'alasan-tolak'">
+            <div class="relative">
+                <button
+                    type="button"
+                    class="absolute top-0 right-0 text-neutral hover:text-black text-xl font-bold"
+                    @click="modalOpen = false; modalType = null;">
+                    ✕
+                </button>
+
+                <h2 class="text-xl font-bold mb-4">Alasan Tolak Penghuni</h2>
+
+                <form
+                    :action="'/pengelola/penghuni-pengelola/reject-masuk/' + selectedPenghuni.id"  {{-- ← Pakai id dari selectedPenghuni --}}
+                    method="POST"
+                    x-data="{ alasan: '', error: '' }">
+
+                    @csrf
+
+                    {{-- Hidden field untuk trigger alasan flow di controller --}}
+                    <input type="hidden" name="with_alasan" value="1">
+
+                    <x-form.textarea
+                        label="Alasan Tolak"
+                        name="alasan_tolak"
+                        rows="4"
+                        placeholder="Masukkan alasan menolak penghuni..."
+                        class="text-black"
+                        x-model="alasan" />
+
+                    <p x-show="error" x-text="error" class="text-red-500 text-xs mt-1"></p>
+
+                    <div class="mt-6">
+                        <button
+                            type="button"
+                            class="px-5 py-3 w-full rounded-md bg-[#E73D2E] text-white text-sm font-medium hover:bg-red-100 hover:text-[#E73D2E] transition"
+                            @click="if(!alasan.trim()){ error = 'Alasan tolak wajib diisi.'; return; } error = ''; $el.closest('form').submit();">
+                            Kirim Alasan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </template>
 
         {{-- ================= SETUJUI PENGHUNI ================= --}}
         <template x-if="modalType === 'setujui-penghuni'">
@@ -844,53 +865,68 @@
 
         {{-- ================= CONFIRM TOLAK KELUAR ================= --}}
         <template x-if="modalType === 'confirm-tolak-keluar'">
-
             <div class="relative">
+                <button type="button" class="absolute top-0 right-0 text-xl" @click="closeModal()">✕</button>
 
-                <button
-                    type="button"
-                    class="absolute top-0 right-0 text-xl"
-                    @click="closeModal()">
-
-                    ✕
-
-                </button>
-
-                <h2 class="text-xl font-bold mb-4">
-                    Konfirmasi Hapus
-                </h2>
-
-                <p class="text-xs text-neutral">
-                    Apakah Anda yakin ingin menolak permintaan penghuni? Tindakan ini tidak dapat dibatalkan.
-                </p>
+                <h2 class="text-xl font-bold mb-4">Konfirmasi Tolak Keluar</h2>
+                <p class="text-xs text-neutral">Apakah Anda yakin ingin menolak permintaan keluar penghuni? Tindakan ini tidak dapat dibatalkan.</p>
 
                 <div class="flex gap-3 mt-8">
-
                     <x-form.button
                         type="button"
                         class="w-full bg-transparent border-2 !border-neutral !text-neutral hover:!bg-neutral hover:!text-white"
                         @click="modalType = 'permintaan-keluar'">
                         Batal
                     </x-form.button>
-
                     <x-form.button
                         type="button"
-                        class="w-full text-white !bg-red-600 hover:!bg-red-100 hover:!text-red-600"
-                        @click="$refs.formRejectKeluar.submit()">
-                        Ya
+                        class="w-full !text-white !bg-red-600"
+                        @click="modalType = 'alasan-tolak-keluar'"> {{-- ← ke modal alasan, bukan langsung submit --}}
+                        Tolak
                     </x-form.button>
-                    <form
-                        x-ref="formRejectKeluar"
-                        :action="'/pengelola/penghuni-pengelola/reject-keluar/' + selectedPenghuni.id"
-                        method="POST"
-                        class="hidden">
-                        @csrf
-                    </form>
-
                 </div>
-
             </div>
+        </template>
 
+        {{-- ================= ALASAN TOLAK KELUAR ================= --}}
+        <template x-if="modalType === 'alasan-tolak-keluar'">
+            <div class="relative">
+                <button
+                    type="button"
+                    class="absolute top-0 right-0 text-neutral hover:text-black text-xl font-bold"
+                    @click="modalOpen = false; modalType = null;">
+                    ✕
+                </button>
+
+                <h2 class="text-xl font-bold mb-4">Alasan Tolak Keluar</h2>
+
+                <form
+                    :action="'/pengelola/penghuni-pengelola/reject-keluar/' + selectedPenghuni.id"
+                    method="POST"
+                    x-data="{ alasan: '', error: '' }">
+
+                    @csrf
+
+                    <x-form.textarea
+                        label="Alasan Tolak"
+                        name="alasan_tolak_keluar"
+                        rows="4"
+                        placeholder="Masukkan alasan menolak permintaan keluar..."
+                        class="text-black"
+                        x-model="alasan" />
+
+                    <p x-show="error" x-text="error" class="text-red-500 text-xs mt-1"></p>
+
+                    <div class="mt-6">
+                        <button
+                            type="button"
+                            class="px-5 py-3 w-full rounded-md bg-[#E73D2E] text-white text-sm font-medium hover:bg-red-100 hover:text-[#E73D2E] transition"
+                            @click="if(!alasan.trim()){ error = 'Alasan tolak wajib diisi.'; return; } error = ''; $el.closest('form').submit();">
+                            Kirim Alasan
+                        </button>
+                    </div>
+                </form>
+            </div>
         </template>
 
         {{-- ================= SETUJUI PENGHUNI KELUAR ================= --}}

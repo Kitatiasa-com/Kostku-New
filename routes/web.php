@@ -164,6 +164,7 @@ Route::controller(PenghuniPengelolaController::class)->group(function () {
     Route::post('/pengelola/penghuni-pengelola/reject-masuk/{id}', [PenghuniPengelolaController::class, 'rejectPermintaanMasuk'])->name('penghuni.reject.masuk');
     Route::post('/pengelola/penghuni-pengelola/reject-keluar/{id}', [PenghuniPengelolaController::class, 'rejectPermintaanKeluar'])->name('penghuni.reject.keluar');
     Route::post('/pengelola/penghuni-pengelola/keluar/{penghuni}', 'approveKeluar')->name('penghuni.approve_keluar');
+    Route::post('/penghuni/penghuni-pengelola/alasan-tolak', 'penghuniTolak')->name('alasan.tolak');
 });
 
 // Riwayat Penilaian Penghuni

@@ -24,6 +24,8 @@ class Penghuni extends Model
         'skor_perawatan_fasilitas',
         'catatan',
         'bukti_file',
+        'alasan_tolak', 
+        'alasan_tolak_keluar',
     ];
 
     public function records()
